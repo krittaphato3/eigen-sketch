@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Linear Algebra Lab — Draw & Align</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <link href="style.css" rel="stylesheet" />
+</head>
+<body>
+  <header>
+    <h1>Linear Algebra Lab</h1>
+    <div class="controls">
+      <label>Level
+        <select id="topic">
+          <option value="house-basic">House • Basic</option>
+          <option value="house-door-window">House • Details</option>
+          <option value="triangle">Triangle</option>
+          <option value="square">Square</option>
+          <option value="star">Star</option>
+        </select>
+      </label>
+
+      <label>Difficulty
+        <select id="difficulty">
+          <option value="easy">Easy</option>
+          <option value="normal" selected>Normal</option>
+          <option value="hard">Hard</option>
+          <option value="insane">Insane</option>
+        </select>
+      </label>
+
+      <label>Strictness
+        <input id="strict" type="range" min="10" max="40" value="22" />
+        <span id="strictVal">0.22</span>
+      </label>
+
+      <label><input id="mirrorOK" type="checkbox" /> Mirror OK</label>
+      <label><input id="liveJudge" type="checkbox" checked /> Live Judge</label>
+      <label><input id="soundFX" type="checkbox" checked /> Sound</label>
+
+      <label>Method
+        <!-- IMPORTANT: the id is methodSel (JS expects this exact id) -->
+        <select id="methodSel">
+          <option value="orthogonal">Orthogonal (R, t)</option>
+          <option value="similarity" selected>Similarity (sR, t)</option>
+          <option value="affine">Affine (A, t)</option>
+          <option value="pca">PCA Align (sR, t)</option>
+        </select>
+      </label>
+
+      <label><input id="academicMode" type="checkbox" /> Academic mode</label>
+      <label><input id="vizResiduals" type="checkbox" checked /> Residual vectors</label>
+      <label><input id="vizFrames" type="checkbox" checked /> Basis frames</label>
+      <label><input id="vizPCA" type="checkbox" /> PCA axes</label>
+
+      <button id="checkBtn">Check</button>
+      <button id="clearBtn" class="danger">Clear</button>
+      <button id="undoBtn">Undo</button>
+      <button id="redoBtn">Redo</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="stage">
+      <div id="padWrap">
+        <canvas id="pad"></canvas>
+      </div>
+      <div class="hud">
+        <div class="timer"><span id="time">00:00</span></div>
+        <div class="stars" id="stars">☆☆☆</div>
+      </div>
+    </div>
+
+    <aside>
+      <div class="card">
+        <h3>Score</h3>
+        <div class="big"><span id="score">—</span></div>
+        <div class="meta">
+          <div>RMSE: <b id="rmse">—</b></div>
+          <div>Coverage: <b id="cov">—</b></div>
+          <div>Corners: <b id="corn">—</b></div>
+          <div>Method used: <b id="methodUsed">—</b></div>
+        </div>
+        <small id="details"></small>
+      </div>
+
+      <div class="card">
+        <h3>How it judges</h3>
+        <ul class="small">
+          <li>Centroid + unit RMS scaling</li>
+          <li>Orthogonal / Similarity / Affine / PCA</li>
+          <li>Optional ICP refine</li>
+          <li>Curvature-weighted Chamfer</li>
+          <li>Corner proximity bonus</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Math details</h3>
+        <pre id="mathDump" class="mono">—</pre>
+      </div>
+
+      <div class="card">
+        <h3>Template sharing</h3>
+        <div class="share">
+          <label class="row">
+            Name
+            <input id="tplName" type="text" placeholder="My template" />
+          </label>
+          <div class="row">
+            <button id="btnUseAsTemplate">Use my drawing as template</button>
+            <button id="btnExportTemplate">Export current template</button>
+          </div>
+          <div class="row">
+            <button id="btnImportTemplate">Import template (.json)</button>
+            <input id="importFile" type="file" accept=".json,application/json" hidden />
+          </div>
+          <div class="row">
+            <button id="btnResetTemplates" class="danger">Reset custom templates</button>
+          </div>
+          <small class="muted">
+            Export creates a <code>.lal.json</code> file. Share it; the recipient imports and it appears under Level ▸ Custom.
+          </small>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Tips</h3>
+        <ul class="small">
+          <li>Multiple strokes allowed</li>
+          <li>Position/size auto-aligned</li>
+          <li>Use Mirror OK for symmetric shapes</li>
+        </ul>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <small>2D Procrustes (θ = atan2(b−c, a+d)), similarity scaling, affine least-squares, PCA eigens, curvature-weighted Chamfer, spatial hashing.</small>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
